@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import React, {useEffect, useState} from 'react';
+import {makeStyles} from '@material-ui/core/styles';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
@@ -25,21 +25,11 @@ const useStyles = makeStyles((theme) => ({
         marginTop: theme.spacing(1),
         marginBottom: theme.spacing(1),
     },
-    navbar: {
-        flexGrow: 1,
-    },
     menuButton: {
         marginRight: theme.spacing(2),
     },
     title: {
         flexGrow: 1,
-    },
-    toolbar: {
-        justifyContent: 'space-between'
-    },
-    stepper: {
-        backgroundColor: 'transparent',
-        width: 'auto'
     }
 }));
 
@@ -47,14 +37,14 @@ function getSteps() {
     return ['Upload dataset', 'Adjust settings', 'Confirm details'];
 }
 
-function getStepContent(stepIndex) {
+function getStepContent({stepIndex, ...props}) {
     switch (stepIndex) {
         case 0:
-            return (<UploadDataset/>);
+            return (<UploadDataset {...props}/>);
         case 1:
-            return (<AdjustSettings/>);
+            return (<AdjustSettings {...props}/>);
         case 2:
-            return (<ConfirmDetails/>);
+            return (<ConfirmDetails {...props}/>);
         default:
             return 'Unknown stepIndex';
     }
@@ -63,6 +53,7 @@ function getStepContent(stepIndex) {
 const StepsForm = () => {
     const classes = useStyles();
     const [activeStep, setActiveStep] = useState(0);
+    const [data, setData] = useState();
     const steps = getSteps();
 
     const handleNext = () => {
@@ -77,23 +68,22 @@ const StepsForm = () => {
         setActiveStep(0);
     };
 
+
     return (
         <div className={classes.root}>
-            <div className={classes.navbar}>
-                <AppBar position="static">
-                    <Toolbar className={classes.toolbar}>
-                        <Typography variant="h6" >
-                            {getSteps()[activeStep]}
-                        </Typography>
-                        <Stepper activeStep={activeStep} alternativeLabel className={classes.stepper}>
-                            {steps.map((label) => (
-                                <Step key={label}>
-                                    <StepLabel>{label}</StepLabel>
-                                </Step>
-                            ))}
-                        </Stepper>
-                    </Toolbar>
-                </AppBar>
+            <div className="header">
+                <div className="header">
+                    <Typography variant="h6" className="header-title">
+                        {getSteps()[activeStep]}
+                    </Typography>
+                    <Stepper activeStep={activeStep} alternativeLabel>
+                        {steps.map((label) => (
+                            <Step key={label}>
+                                <StepLabel>{label}</StepLabel>
+                            </Step>
+                        ))}
+                    </Stepper>
+                </div>
             </div>
 
             <div>
@@ -104,7 +94,11 @@ const StepsForm = () => {
                     </div>
                 ) : (
                     <div>
-                        <div className={classes.instructions}>{getStepContent(activeStep)}</div>
+                        <div className={classes.instructions}>{getStepContent({
+                            stepIndex: activeStep,
+                            onDataLoad: setData,
+                            columns: data?.columns
+                        })}</div>
                         <div>
                             <Button
                                 disabled={activeStep === 0}
