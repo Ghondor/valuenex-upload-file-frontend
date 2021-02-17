@@ -1,3 +1,12 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.main-container {
+    width: 718px;
+    height: 700px;
+}
+
+.active-steps {
+
+}

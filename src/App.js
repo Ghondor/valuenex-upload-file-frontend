@@ -1,9 +1,11 @@
 import logo from './logo.svg';
 import './App.css';
 
+import StepsContainer from './components/StepsContainer'
+
 function App() {
   return (
-    <h1 className="text-5xl text-red-600">Hello</h1>
+    <StepsContainer/>
   );
 }
 
